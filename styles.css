@@ -139,12 +139,19 @@ body {
   visibility: hidden;
   transform: translateY(-10px);
   transition: var(--transition);
+  z-index: 100;
 }
 
 .nav-dropdown:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .dropdown-grid {

@@ -2,26 +2,63 @@
 const loanTabs = document.querySelectorAll('.loan-tab');
 const tabPanels = document.querySelectorAll('.tab-panel');
 
-loanTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const tabName = tab.getAttribute('data-tab');
-    
-    // Remove active class from all tabs and panels
-    loanTabs.forEach(t => t.classList.remove('active'));
-    tabPanels.forEach(p => p.classList.remove('active'));
-    
-    // Add active class to clicked tab and corresponding panel
-    tab.classList.add('active');
-    document.getElementById(`${tabName}-panel`).classList.add('active');
-    
-    // Smooth scroll to loan section
-    const loanSection = document.querySelector('.loan-types');
-    const headerHeight = document.querySelector('.header').offsetHeight;
+// Function to switch tabs
+function switchTab(tabName) {
+  // Remove active class from all tabs and panels
+  loanTabs.forEach(t => t.classList.remove('active'));
+  tabPanels.forEach(p => p.classList.remove('active'));
+  
+  // Add active class to clicked tab and corresponding panel
+  const targetTab = document.querySelector(`.loan-tab[data-tab="${tabName}"]`);
+  const targetPanel = document.getElementById(`${tabName}-panel`);
+  
+  if (targetTab && targetPanel) {
+    targetTab.classList.add('active');
+    targetPanel.classList.add('active');
+  }
+  
+  // Smooth scroll to loan section
+  const loanSection = document.querySelector('.loan-types');
+  if (loanSection) {
+    const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
     const sectionTop = loanSection.offsetTop - headerHeight - 20;
     
     window.scrollTo({
       top: sectionTop,
       behavior: 'smooth'
+    });
+  }
+}
+
+// Tab click handlers
+loanTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const tabName = tab.getAttribute('data-tab');
+    switchTab(tabName);
+  });
+});
+
+// Handle navigation menu links to activate tabs
+document.addEventListener('DOMContentLoaded', () => {
+  // Handle all loan product links in navigation
+  const loanLinks = document.querySelectorAll('a[href="#home-loans"], a[href="#construction-loans"], a[href="#commercial-loans"]');
+  
+  loanLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      
+      // Map href to tab name
+      const tabMap = {
+        '#home-loans': 'home',
+        '#construction-loans': 'construction',
+        '#commercial-loans': 'commercial'
+      };
+      
+      const tabName = tabMap[href];
+      if (tabName) {
+        switchTab(tabName);
+      }
     });
   });
 });
@@ -50,22 +87,29 @@ if (mobileMenuBtn) {
   });
 }
 
-// Smooth Scroll
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    const href = this.getAttribute('href');
-    if (href === '#') return;
-    
-    e.preventDefault();
-    const target = document.querySelector(href);
-    if (target) {
-      const headerHeight = document.querySelector('.header').offsetHeight;
-      const targetPosition = target.offsetTop - headerHeight - 20;
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-    }
+// Smooth Scroll for non-loan links
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const href = this.getAttribute('href');
+      if (href === '#') return;
+      
+      // Skip loan product links (handled separately)
+      if (href === '#home-loans' || href === '#construction-loans' || href === '#commercial-loans') {
+        return;
+      }
+      
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+        const targetPosition = target.offsetTop - headerHeight - 20;
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
   });
 });
 
