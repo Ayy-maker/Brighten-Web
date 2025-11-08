@@ -917,7 +917,7 @@ body {
 /* ===== WHY CHOOSE SECTION ===== */
 .why-choose {
   padding: 100px 0;
-  background: var(--bg-lighter);
+  background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 50%, #81D4FA 100%);
 }
 
 .why-grid {
